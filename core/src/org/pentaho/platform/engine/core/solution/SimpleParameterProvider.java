@@ -175,6 +175,8 @@ public class SimpleParameterProvider extends BaseParameterProvider implements IP
       value = scriptPattern.matcher( value ).replaceAll( "" );
       scriptPattern = Pattern.compile( "onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL );
       value = scriptPattern.matcher( value ).replaceAll( "" );
+      scriptPattern = Pattern.compile( "onerror(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL );
+      value = scriptPattern.matcher( value ).replaceAll( "" );
     }
     return value;
   }
