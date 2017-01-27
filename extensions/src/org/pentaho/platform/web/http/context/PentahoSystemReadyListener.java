@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2017 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.platform.web.http.context;
@@ -31,6 +31,8 @@ import org.pentaho.platform.api.engine.IPluginProvider;
 import org.pentaho.platform.api.engine.PlatformPluginRegistrationException;
 import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
+import javax.jcr.Repository;
+import org.apache.jackrabbit.core.RepositoryImpl;
 import org.pentaho.platform.util.logging.Logger;
 
 public class PentahoSystemReadyListener implements ServletContextListener {
@@ -64,6 +66,17 @@ public class PentahoSystemReadyListener implements ServletContextListener {
 
   @Override
   public void contextDestroyed( ServletContextEvent servletContextEvent ) {
+    Repository jcrRepository = PentahoSystem.get( Repository.class, "jcrRepository", null );
+    if ( jcrRepository == null ) {
+      System.err.println( "Cannot obtain JCR repository. Exiting" );
+      return;
+    }
+    if ( !( jcrRepository instanceof RepositoryImpl ) ) {
+      System.err.println(
+        String.format( "Expected RepositoryImpl, but got: [%s]. Exiting", jcrRepository.getClass().getName() ) );
+      return;
+    }
+    ( (org.apache.jackrabbit.core.RepositoryImpl) jcrRepository ).shutdown();
   }
 
 }
